@@ -1,0 +1,7 @@
+# Core PySpark and YAML parsing
+pyspark==3.3.1
+pyyaml==6.0
+
+# Apache Airflow and provider for Spark
+apache-airflow==2.5.0
+apache-airflow-providers-apache-spark==4.0.0
