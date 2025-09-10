@@ -1,26 +1,29 @@
-# Scalable ETL and Data Pipeline Framework
+# Scalable PySpark ETL Framework
 
-This repository contains a generic, configuration-driven ETL (Extract, Transform, Load) framework built in Python. It is designed to demonstrate data engineering best practices, including modularity, data quality enforcement, and orchestration. This project proves an ability to build the foundational tools that enable data science, rather than just using them.
+This repository contains a generic, configuration-driven ETL framework built on **Apache Spark**. It is designed to showcase senior-level data engineering practices, including distributed data processing, data quality enforcement, and orchestration in a production-like environment.
 
-The framework allows a user to define a complex, multi-step data pipeline in a simple YAML configuration file. It integrates `pandera` for rigorous data validation and is designed to be orchestrated by tools like Apache Airflow.
+The framework allows a user to define a complex, multi-step data pipeline in a simple YAML configuration file. It uses PySpark for all data manipulation, making it scalable to handle large datasets. It is designed to be orchestrated by Apache Airflow, and the entire environment—**including a Spark standalone cluster and an Airflow instance**—is containerized with Docker for easy, reproducible setup.
 
 ## Framework Architecture
 
-1.  **YAML Configuration**: The user defines the entire pipeline—including data sources, transformations, validation rules, and destinations—in a YAML file. This separates the pipeline's logic from its implementation.
-2.  **Pipeline Orchestrator**: A core `Pipeline` class reads the YAML file, initializes the necessary tasks, and executes them in the specified order.
-3.  **Modular Tasks**: The framework is built on a series of abstract base classes for each ETL step (`ExtractTask`, `TransformTask`, `ValidateTask`, `LoadTask`), making it easily extensible.
-4.  **Schema Enforcement**: At any point in the pipeline, a `ValidateTask` can be added to enforce a data schema using `pandera`, ensuring data quality and preventing corrupted data from moving downstream.
-5.  **Airflow & Docker Integration**: The project includes a `docker-compose.yml` file to spin up a local Apache Airflow instance. A sample DAG is provided to show how to schedule and run a pipeline defined by this framework.
+1.  **YAML Configuration**: The user defines the entire pipeline—data sources, transformations, validation rules, and destinations—in a YAML file. This separates the pipeline's logic from its implementation.
+2.  **PySpark Engine**: The core orchestrator is a Python script that initializes a `SparkSession`, reads the YAML file, and applies the transformations and validations using the PySpark DataFrame API.
+3.  **Modular Transformations & Validations**: The framework comes with a library of reusable PySpark functions for transformations (e.g., `rename_column`, `with_derived_column`) and data validation (e.g., `expect_column_to_exist`, `expect_column_values_to_be_unique`).
+4.  **Local Spark & Airflow Cluster**: The `docker-compose.yml` file spins up a complete, multi-container environment:
+    * A **Spark Master** node.
+    * A **Spark Worker** node.
+    * A full **Apache Airflow** instance (webserver, scheduler, worker).
+5.  **Airflow `SparkSubmitOperator`**: A sample DAG is provided that uses Airflow's `SparkSubmitOperator` to submit the PySpark job to the standalone cluster, demonstrating a true production orchestration pattern.
 
 ## How to Use
 
-### 1. Run a Pipeline Locally
+### 1. Initialize the Environment
 
-You can run any pipeline directly using the framework's entry point.
+The project includes a setup script to create the necessary directories for Airflow to function correctly inside Docker.
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Make the script executable
+chmod +x setup_airflow.sh
 
-# Run the example sales pipeline
-python -m etl_framework.pipeline --config pipelines/sales_pipeline.yml
+# Run the script
+./setup_airflow.sh
