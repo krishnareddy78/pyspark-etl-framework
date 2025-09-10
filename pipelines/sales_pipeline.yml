@@ -1,0 +1,48 @@
+name: "Process Monthly Sales Data"
+pipeline:
+  - name: "extract"
+    details:
+      type: "csv"
+      path: "/app/data/raw/sales_data.csv" # Path inside the Docker container
+
+  - name: "validate"
+    details:
+      - function: "expect_column_to_exist"
+        args:
+          column_name: "order_id"
+      - function: "expect_row_count_to_be_between"
+        args:
+          min_value: 1
+          max_value: 10000
+
+  - name: "transform"
+    details:
+      - function: "with_derived_column"
+        args:
+          new_column_name: "total_revenue"
+          expression: "quantity * unit_price"
+      - function: "rename_column"
+        args:
+          old_name: "order_date"
+          new_name: "sale_date"
+      - function: "cast_column"
+        args:
+          column_name: "total_revenue"
+          new_type: "double"
+
+  - name: "validate"
+    details:
+      - function: "expect_column_values_to_not_be_null"
+        args:
+          column_name: "total_revenue"
+      - function: "expect_column_values_to_be_unique"
+        args:
+          column_name: "order_id"
+
+  - name: "load"
+    details:
+      type: "console" # Display the result in the logs for this example
+      # In a real scenario, this would be parquet:
+      # type: "parquet"
+      # path: "/app/data/processed/sales"
+      # mode: "overwrite"
