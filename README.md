@@ -46,14 +46,19 @@ Run the setup script to create the necessary directories for Airflow to function
 ```bash
 chmod +x setup_airflow.sh
 ./setup_airflow.sh
+```
 
-2. Launch the Spark & Airflow Cluster
+### 2. Launch the Spark & Airflow Cluster
 This single command will build and start all services.
+```bash
 docker-compose up -d
+```
 Airflow UI → http://localhost:8080 (login: airflow/airflow)
 Spark Master UI → http://localhost:8081
-3. Trigger the ETL Pipeline via Airflow
+
+### 3. Trigger the ETL Pipeline via Airflow
 Open the Airflow UI in your browser.
 Find the DAG named pyspark_etl_sales_pipeline.
 Enable the DAG and click ▶ Play to trigger a run.
 Monitor execution in the Grid View and inspect logs from the SparkSubmitOperator.
+
