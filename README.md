@@ -1,4 +1,4 @@
-# ⚡ Scalable PySpark ETL Framework
+# Scalable PySpark ETL Framework
 
 This repository contains a **generic, configuration-driven ETL framework** built on **Apache Spark**.  
 It is designed to showcase **senior-level data engineering practices**, including:
@@ -14,7 +14,7 @@ It is designed to be orchestrated by **Apache Airflow**, and the entire environm
 
 ---
 
-## 🏛️ Framework Architecture
+## Framework Architecture
 
 - **YAML Configuration**  
   The user defines the entire pipeline—data sources, transformations, validation rules, and destinations—in a YAML file.  
@@ -38,7 +38,7 @@ It is designed to be orchestrated by **Apache Airflow**, and the entire environm
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 ### 1. Initialize the Environment
 Run the setup script to create the necessary directories for Airflow to function correctly inside Docker.
@@ -61,4 +61,50 @@ Open the Airflow UI in your browser.
 Find the DAG named pyspark_etl_sales_pipeline.
 Enable the DAG and click ▶ Play to trigger a run.
 Monitor execution in the Grid View and inspect logs from the SparkSubmitOperator.
+
+## Project Structure
+- **pyspark-etl-framework/**
+  - **pyspark_etl_framework/**
+    - `__init__.py`
+    - `pipeline.py` — main PySpark pipeline orchestrator
+    - `transformations.py` — library of PySpark transformations
+    - `validators.py` — library of PySpark validation functions
+  - **pipelines/**
+    - `sales_pipeline.yml` — sample YAML configuration
+  - **data/**
+    - **raw/**
+      - `sales_data.csv` — sample input dataset
+  - **airflow/**
+    - **dags/**
+      - `pyspark_etl_sales_pipeline.py` — example Airflow DAG
+    - `requirements.txt` — additional Python dependencies for Airflow worker
+  - `docker-compose.yml` — spins up Spark & Airflow cluster
+  - `setup_airflow.sh` — initialization script for Airflow environment
+  - `requirements.txt` — project dependencies
+  - `setup.py` — makes the framework installable as a Python package
+ 
+## Features
+Configuration-driven pipelines (no hard-coded logic)
+Scalable data processing with PySpark
+Built-in data quality validations
+End-to-end orchestration with Apache Airflow
+Reproducible environment with Docker Compose
+
+## Tech Stack
+Apache Spark (Standalone Cluster)
+PySpark
+Apache Airflow
+Docker & Docker Compose
+YAML-driven Configurations
+
+## Example Use Case
+The sample sales_pipeline.yml demonstrates how to:
+Load sales data from CSV
+Apply column renaming and derived transformations
+Validate schema and unique values
+Write the transformed dataset to a destination
+
+## Contributing
+Contributions are welcome!
+Feel free to open issues and submit pull requests to extend transformations, validations, or orchestration examples.
 
