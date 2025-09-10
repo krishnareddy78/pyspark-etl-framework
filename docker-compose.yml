@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  spark-master:
+    image: bitnami/spark:3.3.1
+    container_name: spark-master
+    ports:
+      - "8081:8080" # Spark Master UI
+      - "7077:7077" # Spark Master Port
+    volumes:
+      - ./pyspark_etl_framework:/app/pyspark_etl_framework
+      - ./pipelines:/app/pipelines
+      - ./data:/app/data
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+
+  spark-worker:
+    image: bitnami/spark:3.3.1
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./pyspark_etl_framework:/app/pyspark_etl_framework
+      - ./pipelines:/app/pipelines
+      - ./data:/app/data
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+
+  airflow:
+    image: apache/airflow:2.5.0
+    container_name: airflow
+    depends_on:
+      - spark-master
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/requirements.txt:/opt/airflow/requirements.txt
+      - ./pyspark_etl_framework:/opt/airflow/pyspark_etl_framework
+      - ./pipelines:/opt/airflow/pipelines
+      - ./data:/opt/airflow/data
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=True
+    command: >
+      bash -c "pip install -r /opt/airflow/requirements.txt && airflow db init && airflow users create --username airflow --password airflow --firstname Anonymous --lastname User --role Admin --email admin@example.org && airflow webserver --port 8080 & airflow scheduler"
