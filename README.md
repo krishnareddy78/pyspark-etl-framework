@@ -84,27 +84,38 @@ Monitor execution in the Grid View and inspect logs from the SparkSubmitOperator
   - `setup.py` — makes the framework installable as a Python package
  
 ## Features
-Configuration-driven pipelines (no hard-coded logic)
-Scalable data processing with PySpark
-Built-in data quality validations
-End-to-end orchestration with Apache Airflow
-Reproducible environment with Docker Compose
+
+- Configuration-driven pipelines (no hard-coded logic)  
+- Scalable data processing with PySpark  
+- Built-in data quality validations  
+- End-to-end orchestration with Apache Airflow  
+- Reproducible environment with Docker Compose  
+
+---
 
 ## Tech Stack
-Apache Spark (Standalone Cluster)
-PySpark
-Apache Airflow
-Docker & Docker Compose
-YAML-driven Configurations
+
+- Apache Spark (Standalone Cluster)  
+- PySpark  
+- Apache Airflow  
+- Docker & Docker Compose  
+- YAML-driven Configurations  
+
+---
 
 ## Example Use Case
-The sample sales_pipeline.yml demonstrates how to:
-Load sales data from CSV
-Apply column renaming and derived transformations
-Validate schema and unique values
-Write the transformed dataset to a destination
+
+The sample `sales_pipeline.yml` demonstrates how to:
+
+- Load sales data from CSV  
+- Apply column renaming and derived transformations  
+- Validate schema and unique values  
+- Write the transformed dataset to a destination  
+
+---
 
 ## Contributing
-Contributions are welcome!
-Feel free to open issues and submit pull requests to extend transformations, validations, or orchestration examples.
+
+Contributions are welcome!  
+Feel free to open issues and submit pull requests to extend transformations, validations, or orchestration examples.  
 
